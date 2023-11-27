@@ -33,6 +33,10 @@ input: .asciiz " "
 you_win: .asciiz "YOU WIN!!"
 
 you_lose: .asciiz "YOU LOSE"
+
+pos_enemigo: .word 0 0 0 0 0
+
+pos_mov: .byte 64 -64 4 -4
 	
 
 .macro cambio_color(%posicion)
@@ -85,7 +89,7 @@ li $a1, 3
 syscall
 addi $a0, $a0, 2 #numero al azar entre 2-4
 move $t4, $a0 #t4 tiene el numero al azar de enemigos
-
+li $s1, 0 #indice del array de la posicion de los enemigos
 	loopPintarEnemigos:
 		bge $t3, $t4, pintarMonedas #cuando se tengan todos los enemigos pintados seguir
 		li $v0, 42
@@ -97,12 +101,15 @@ move $t4, $a0 #t4 tiene el numero al azar de enemigos
 		lw $t2, display($t0)
 		bne $t2, 0xf6f4d2, loopPintarEnemigos #revisa si ya no se ha pintado
 		lw $t2, colores($t1)
+		sw $t0, pos_enemigo($s1)
 		sw $t2, display($t0) #se pinta el enemigo
 		addi $t3, $t3, 1
+		addi $s1, $s1, 4
 		b loopPintarEnemigos
 				
 pintarMonedas:
-
+subi $s1, $s1, 4
+move $t6, $s1
 li $t1, 24 #indice de color de las monedar
 li $t3, 0 #contador
 
@@ -135,7 +142,37 @@ li $a1, 2
 syscall
 
 lb $t1, input
+li $t7, 0 #contador de enemigos
+li $s3, 16
+ bucle_mover_enemigos:
+ 	bgt $t7, $t6,mover_jugador 
+ 	lw $t8, pos_enemigo($t7)
+ 	random_mov:
+ 	li $a1, 5
+ 	li $v0, 42
+ 	syscall
+ 	lb $s4, pos_mov($a0)
+ 	add $s4, $s4, $t8
+ 	blt $s4, 0, random_mov
+ 	lw $s5, display($s4)
+ 	beq $s5, 0x7e846b, random_mov
+ 	beq $s5, 0x94bfbe, perder
+ 	beq $t3, 0x9ee493, subir_forzado
 
+ 	seguir:
+ 	lw $s6, colores($s1)
+ 	sw $s6, display($t8)
+ 	lw $s6, colores($s3)
+ 	sw $s6, display($s4)
+ 	sw $s4, pos_enemigo($t7)
+ 	addi $t7, $t7, 4
+ 	b bucle_mover_enemigos
+ 	
+ 	 	subir_forzado:
+ 		addi $s4, $t8, 64
+ 		b seguir
+ 	
+mover_jugador:
 beq $t1, 119, subir
 beq $t1, 115, bajar
 beq $t1, 97, izquierda
