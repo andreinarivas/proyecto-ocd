@@ -43,6 +43,13 @@ you_lose: .asciiz "YOU LOSE"
 	beq $t3, 0xa44a3f, perder
 	bne $t3, 0xf7ef99, seguir
 	addi $t4, $t4, 5
+	 
+	li $a0, 100
+	li $a1, 800
+	li $a2, 13
+	li $a3, 126
+	li $v0, 31
+	syscall #suma moneda
 	seguir:
 	lw $t5, colores($s1)
 	sw $t5, display($t0)
@@ -160,15 +167,66 @@ izquierda:
 
 		
 ganar:
-la $a0, you_win
-li $a1, 1
-li $v0, 55
+#cantar
+li $a0, 75
+li $a1, 200
+li $a2, 6
+li $a3, 126
+li $v0, 33
+syscall
+
+li $a0, 85
+li $a1, 200
+li $a2, 6
+li $a3, 126
+li $v0, 33
+syscall
+li $a0, 80
+li $a1, 100
+li $a2, 6
+li $a3, 126
+li $v0, 33
+syscall
+
+li $a0, 85
+li $a1, 200
+li $a2, 6
+li $a3, 126
+li $v0, 33
+syscall
+li $a0, 80
+li $a1, 1000
+li $a2, 6
+li $a3, 126
+li $v0, 33
+syscall
+
+li $a0, 90
+li $a1, 1000
+li $a2, 6
+li $a3, 126
+li $v0, 33
 syscall
 b exit
 perder:
-la $a0, you_lose
-li $a1, 1
-li $v0, 55
+#tocaste un enemigo
+li $a0, 70
+li $a1, 500
+li $a2, 57
+li $a3, 126
+li $v0, 33
+syscall
+li $a0, 67
+li $a1, 500
+li $a2, 57
+li $a3, 126
+li $v0, 33
+syscall
+li $a0, 60
+li $a1, 750
+li $a2, 57
+li $a3, 126
+li $v0, 33
 syscall
 
 exit:
