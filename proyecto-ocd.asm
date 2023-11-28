@@ -157,8 +157,8 @@ li $s3, 16
  	lw $s5, display($s4)
  	beq $s5, 0x7e846b, random_mov
  	beq $s5, 0x94bfbe, perder
- 	beq $t3, 0x9ee493, subir_forzado
-
+ 	bne $s5, 0x9ee493, seguir
+ 	subi $s4, $t8, 64
  	seguir:
  	lw $s6, colores($s1)
  	sw $s6, display($t8)
@@ -168,9 +168,6 @@ li $s3, 16
  	addi $t7, $t7, 4
  	b bucle_mover_enemigos
  	
- 	 	subir_forzado:
- 		addi $s4, $t8, 64
- 		b seguir
  	
 mover_jugador:
 beq $t1, 119, subir
