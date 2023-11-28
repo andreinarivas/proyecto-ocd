@@ -30,9 +30,13 @@ colores: .word 0xf6f4d2 0x7e846b 0x94bfbe 0xf4bfdb 0xa44a3f 0x9ee493 0xf7ef99 #f
 
 input: .asciiz " "
 
+message: .asciiz "Message: "
+
 you_win: .asciiz "YOU WIN!!"
 
 you_lose: .asciiz "YOU LOSE"
+
+bienvenida: .asciiz "¡Bienvenido a nuestro laberinto! \nUtiliza las siguientes teclas para moverte: \nW para ir hacia arriba \nS para ir hacia abajo \nA para moverte a la izquierda  \nD para la derecha. \nAgarra las monedas, cada una vale 5 puntos. \n ¡Exito!"
 
 pos_enemigo: .word 0 0 0 0 0
 
@@ -183,7 +187,12 @@ li $t3, 0 #contador
 		addi $t3, $t3, 1
 		b loopPintarMonedas
 
-iniciar:		
+iniciar:
+
+la $a0 bienvenida
+li $v0 4
+syscall	
+						
 li $t0, 16 #posicion inicial del jugador
 li $t4, 0 #puntaje
 li $s1, 0 #indice de color del camino
@@ -299,6 +308,11 @@ li $a3, 126
 li $v0, 33
 syscall
 
+li $v0 59
+la $a0 message
+la $a1 you_win
+syscall
+
 la $a0, score
 li $v0, 4
 syscall
@@ -353,6 +367,11 @@ li $a1, 750
 li $a2, 57
 li $a3, 126
 li $v0, 33
+syscall
+
+li $v0 59
+la $a0 message
+la $a1 you_lose
 syscall
 
 exit:
